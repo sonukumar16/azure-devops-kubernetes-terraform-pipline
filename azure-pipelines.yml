@@ -23,3 +23,10 @@ stages:
                 **/*.yaml
               TargetFolder: '$(Build.ArtifactStagingDirectory)'
           - bash: ls -R $(Build.ArtifactStagingDirectory)
+          # suppose build stage might want to have an output and the output you want to share with dev deploy 
+          # then we need an artifact so that publish and use
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
