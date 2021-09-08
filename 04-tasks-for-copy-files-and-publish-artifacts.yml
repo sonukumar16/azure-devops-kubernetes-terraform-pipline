@@ -1,0 +1,32 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    jobs:
+      - job: First_Job
+        steps:
+          - bash: node --version
+          - bash: java -version
+          - bash: python --version
+          - bash: mvn -version
+          - bash: ls -R $(Build.ArtifactStagingDirectory)
+
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: '$(System.DefaultWorkingDirectory)'
+              Contents: |
+                **/*.tf
+                **/*.yaml
+              TargetFolder: '$(Build.ArtifactStagingDirectory)'
+          - bash: ls -R $(Build.ArtifactStagingDirectory)
+          # suppose build stage might want to have an output and the output you want to share with dev deploy 
+          # then we need an artifact so that publish and use
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
