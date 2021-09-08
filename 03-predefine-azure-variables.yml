@@ -10,11 +10,17 @@ pool:
   vmImage: ubuntu-latest
 
 stages:
-  - stage: Build2
+  - stage: Build
     jobs:
       - job: First_Job
         steps:
           - bash: echo Build_FirstJob
           - bash: echo $(PipeLineLevelVariable)
-          - bash: echo $(Build2.BuildNumber)
+          # here Build in Build.BuildNumber or Build.* is not depends on the name of stage, so Build is predefined varibale in azure
+          - bash: echo $(Build.BuildNumber)
           - bash: echo $(Build.BuildId)
+          - bash: echo $(Build.SourceBranchName)
+          - bash: echo $(Build.SourceDirectory)
+          - bash: echo $(System.DefaultWorkingDirectory)
+          - bash: ls -R $(System.DefaultWorkingDirectory)
+          - bash: echo $(Build.ArtifactStagingDirectory)
