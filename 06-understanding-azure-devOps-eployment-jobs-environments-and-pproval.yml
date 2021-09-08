@@ -1,0 +1,32 @@
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    jobs:
+      - job: BuildJob
+        steps:
+          - bash: echo "Do the build"
+  - stage: Dev_Deploy
+    jobs:
+    # this deployement job has more addtional advantages as compare to normal job. for this we can define strategy
+      - deployment:  Dev_Deploy_Job
+      # this job will deploy to Dev env
+        environment: Dev
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo deploy to Dev    
+  - stage: QA_Deploy
+    jobs:
+      - deployment: QA_Deploy_Job
+        environment: QA
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo deploy to QA         
